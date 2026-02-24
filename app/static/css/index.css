@@ -1,0 +1,30 @@
+.btn-primary {
+    background-color: var(--light-blue);
+    border-color: var(--dark-blue);
+    height: 3.5rem;
+    max-height: none;
+    width: 10rem;
+    min-width: none;
+    transition: all 0.3s ease;
+    font-family: var(--zain), serif;
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--light-blue);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 365px) {
+    #btn-group {
+        flex-direction: column !important;
+        width: 100%;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+}

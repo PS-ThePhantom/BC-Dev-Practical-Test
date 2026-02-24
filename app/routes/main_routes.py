@@ -3,7 +3,15 @@ from . import main_bp
 
 @main_bp.route("/", methods=["GET"])
 def home():
-    return "<h1>Welcome to your Flask App!</h1>", 200
+    return render_template("index.html"), 200
+
+@main_bp.route("/client", methods=["GET"])
+def client_page():
+    return render_template("client.html"), 200
+
+@main_bp.route("/contact", methods=["GET"])
+def contact_page():
+    return render_template("contact.html"), 200
 
 @main_bp.route("/<path:invalid_path>")
 def page_not_found(invalid_path):
