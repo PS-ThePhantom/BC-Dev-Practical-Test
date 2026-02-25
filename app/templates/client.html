@@ -11,7 +11,22 @@
         <h1 class="display-4">Welcome to Client Area</h1>
         <p class="lead">Create and manage client information.</p>
 
-        
+        <div class="divider"></div>
+
+        <h4 class="mb-3">Create New Client</h4>
+        <form id="client-form" class="w-100" style="max-width: 400px;">
+            <div class="mb-3 text-start">
+                <label for="client-name" class="form-label">Client Name</label>
+                <input type="text" class="form-control" id="client-name" placeholder="Enter client name" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="client-submit-button">
+                <span>Create Client</span>
+                <div class="spinner-border hidden" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </button>
+            <small id="client-create-success" class="form-text hidden">Client added successfully!</small>
+        </form>
     </div>
 {% endblock %}
 
