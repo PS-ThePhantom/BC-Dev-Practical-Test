@@ -1,5 +1,5 @@
 from .. import db
-from ..models.client import Client, client_contact
+from ..models.client import Client, Contact, client_contact 
 from sqlalchemy import func
 import string
 
@@ -80,3 +80,60 @@ class ClientService:
         )
         
         return number_of_contacts
+    
+    @staticmethod
+    def get_contacts_by_client(client_code: str):
+        client = Client.query.filter_by(client_code=client_code).first()
+        if not client:
+            return None
+
+        return client.contacts
+    
+    @staticmethod
+    def get_unlinked_contacts(client_code: str):
+        client = Client.query.filter_by(client_code=client_code).first()
+        if not client:
+            return None
+
+        linked_ids = [contact.id for contact in client.contacts]
+
+        if linked_ids:
+            unlinked_contacts = Contact.query.filter(~Contact.id.in_(linked_ids)).all()
+        else:
+            unlinked_contacts = Contact.query.all()
+
+        return unlinked_contacts
+    
+    @staticmethod
+    def link_contact(client_code: str, contact_email: str) -> bool:
+        client = Client.query.filter_by(client_code=client_code).first()
+        if not client:
+            return False
+
+        contact = Contact.query.filter_by(email=contact_email).first()
+        if not contact:
+            return False
+
+        if contact in client.contacts:
+            return False
+
+        client.contacts.append(contact)
+        db.session.commit()
+        return True
+    
+    @staticmethod
+    def unlink_contact(client_code: str, contact_email: str) -> bool:
+        client = Client.query.filter_by(client_code=client_code).first()
+        if not client:
+            return False
+
+        contact = Contact.query.filter_by(email=contact_email).first()
+        if not contact:
+            return False
+
+        if contact not in client.contacts:
+            return False
+
+        client.contacts.remove(contact)
+        db.session.commit()
+        return True
