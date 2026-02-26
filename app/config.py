@@ -6,3 +6,8 @@ class DevelopmentConfig():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = "BCDevSecretKey"
     DEBUG = True
+
+class TestingConfig():
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    TESTING = True

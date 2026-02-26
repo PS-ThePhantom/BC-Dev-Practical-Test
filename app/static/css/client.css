@@ -1,11 +1,9 @@
-.divider {
+.section-divider {
     width: 100%;
-    height: 1px;
-    background-color: var(--dark-blue);
-    margin: 2rem 0;
+    border-top: 1px solid var(--dark-blue) !important;
     max-width: 50rem;
 }
 
 .hidden, .sr-only {
-    display: none;
+    display: none !important;
 }

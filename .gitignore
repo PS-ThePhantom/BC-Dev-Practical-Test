@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-app.db
+*.db
 *.sqlite
 *.sqlite3
 migrations/

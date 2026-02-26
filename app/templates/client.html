@@ -7,17 +7,21 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid text-center vh-100 d-flex flex-column align-items-center py-5 px-2">
+    <div class="container-fluid text-center d-flex flex-column align-items-center py-5 px-2 min-vh-100">
         <h1 class="display-4">Welcome to Client Area</h1>
-        <p class="lead">Create and manage client information.</p>
+        <p class="lead mb-0">Create and manage client information.</p>
 
-        <div class="divider"></div>
+        <div class="section-divider my-5"></div>
 
         <h4 class="mb-3">Create New Client</h4>
         <form id="client-form" class="w-100" style="max-width: 400px;">
             <div class="mb-3 text-start">
                 <label for="client-name" class="form-label">Client Name</label>
                 <input type="text" class="form-control" id="client-name" placeholder="Enter client name" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="client-code" class="form-label">Client Code</label>
+                <input type="text" class="form-control" id="client-code" placeholder="Auto-generated client code" readonly disabled>
             </div>
             <button type="submit" class="btn btn-primary w-100" id="client-submit-button">
                 <span>Create Client</span>
@@ -27,6 +31,30 @@
             </button>
             <small id="client-create-success" class="form-text hidden">Client added successfully!</small>
         </form>
+
+        <div class="section-divider my-5"></div>
+
+        <h4 class="mb-3">Existing Clients</h4>
+
+        <div id="client_list" class="container d-flex flex-column align-items-center justify-content-center">
+            <div id="client-list-loading" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <small id="client-list-error" class="form-text"></small>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-borderd" id="existing-clients-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-start">Client Name</th>
+                            <th scope="col" class="text-start">Client Code</th>
+                            <th scope="col" class="text-center">No. of linked contacts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
