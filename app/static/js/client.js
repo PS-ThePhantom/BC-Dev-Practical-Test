@@ -55,6 +55,7 @@ const updateClientTable = () => {
                         <td class="text-start">${client.name}</td>
                         <td class="text-start">${client.client_code}</td>
                         <td class="text-center">${client.no_of_contacts}</td>
+                        <td><button class="btn btn-secondary w-100" data-client-code="${client.client_code}" data-client-name="${client.name}">link</button></td>
                     </tr>
                 `);
             });
@@ -74,6 +75,20 @@ const updateClientTable = () => {
     });
 }
 
+const openContactsTab = (client) => {
+    const clientCode = client.data("client-code");
+    const clientName = client.data("client-name");
+    const contactsTab = new bootstrap.Tab($("#contacts-tab"));
+
+    $("#contact-head").text(`link contact(s) to ${clientName} (${clientCode})`)
+
+    contactsTab.show();
+}
+
 $(function() {
     updateClientTable();
+
+    $("#existing-clients-table").on("click", "button", function() {
+        openContactsTab($(this));
+    });
 });
