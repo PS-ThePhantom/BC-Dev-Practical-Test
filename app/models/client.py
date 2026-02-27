@@ -18,8 +18,8 @@ class Client(db.Model):
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    surname = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, index=True)
+    surname = db.Column(db.String(100), nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
 
     clients = db.relationship("Client", secondary=client_contact, back_populates="contacts")

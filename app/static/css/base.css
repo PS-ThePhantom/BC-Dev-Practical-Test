@@ -26,3 +26,13 @@ body {
     color: var(--black);
     font-family: var(--poppins), sans-serif;
 }
+
+.section-divider {
+    width: 100%;
+    border-top: 1px solid var(--dark-blue) !important;
+    max-width: 50rem;
+}
+
+.hidden, .sr-only {
+    display: none !important;
+}

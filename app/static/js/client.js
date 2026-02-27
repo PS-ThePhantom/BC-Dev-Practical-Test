@@ -1,5 +1,12 @@
+let currentClient = null;
+
 $("#client-form").submit(function(event) {
     event.preventDefault();
+    if ($("#client-name").val() > 100) {
+        alert("name too long, max = 100 character");
+        return;
+    }
+
     $("#client-submit-button").prop("disabled", true);
     $("#client-submit-button>div").removeClass("hidden");
     $("#client-submit-button>span").addClass("hidden");
@@ -42,11 +49,11 @@ $("#contacts-form").submit(function(event) {
     $("#contact-submit-button>div").removeClass("hidden");
     $("#contact-submit-button>span").addClass("hidden");
 
-    const clientCode = $(this).data("client-code");
+    const clientCode = currentClient.data("client-code");
     const contact_email = $("#contact-name").val();
 
     $.ajax({
-        url: `/api/clients/${contactCode}/contacts/${contact_email}`,
+        url: `/api/clients/${clientCode}/contacts/${contact_email}`,
         method: "POST",
         contentType: "application/json",
         success: function(response) {
@@ -56,7 +63,7 @@ $("#contacts-form").submit(function(event) {
                 .removeClass("text-danger")
                 .addClass("text-success");
 
-            updateContactTable();
+            updateContactsTable(clientCode);
         },
         error: function(xhr, status, error) {
             $("#contact-link-success")
@@ -70,7 +77,7 @@ $("#contacts-form").submit(function(event) {
             $("#contact-submit-button").prop("disabled", false);
             $("#contact-create-success").removeClass("hidden");
 
-            openContactsTab();
+            openContactsTab(currentClient);
         }
     });
 });
@@ -117,7 +124,7 @@ const updateClientTable = () => {
     });
 }
 
-const upDateContactsTable = (client_code) => {
+const updateContactsTable = (client_code) => {
     $("#contact-list-loading").removeClass("hidden");
     $("#linked-contacts-table").addClass("hidden");
     $("#contact-list-error").addClass("hidden");
@@ -139,11 +146,11 @@ const upDateContactsTable = (client_code) => {
                 contacts.forEach(contact => {
                     tbody.append(`
                         <tr>
-                            <td class="text-start">${contact.name} ${contact.surname}</td>
+                            <td class="text-start">${contact.surname} ${contact.name}</td>
                             <td class="text-start">${contact.email}</td>
                             <td class="text-start">
-                                <a href="/clients/${client_code}/contacts/${contact.email}">
-                                    ${window.location.origin}/clients/${client_code}/contacts/${contact.email}
+                                <a href="api/clients/${client_code}/contacts/${contact.email}">
+                                    ${window.location.origin}/api/clients/${client_code}/contacts/${contact.email}
                                 <a>
                             </td>
                         </tr>
@@ -202,7 +209,7 @@ const openContactsTab = (client) => {
         },
         complete: function() {
             contactsTab.show();
-            upDateContactsTable(clientCode);
+            updateContactsTable(clientCode);
         }
     });
 }
@@ -214,7 +221,7 @@ const unlinkContacts = (button) => {
         url: link,
         type: "DELETE",
         success: function(response) {
-            openContactsTab();
+            openContactsTab(currentClient);
         },
         error: function(xhr, status, error) {
             alert("Error unlinking contact");
@@ -226,11 +233,16 @@ $(function() {
     updateClientTable();
 
     $("#existing-clients-table").on("click", "button", function() {
+        currentClient = $(this);
         openContactsTab($(this));
     });
 
-    $("linked-contacts-table").on("click", "a", function(event) {
+    $("#linked-contacts-table").on("click", "a", function(event) {
         event.preventDefault();
         unlinkContacts($(this));
+    });
+
+    $("#general-tab").on("shown.bs.tab", function(event) {
+        updateClientTable();
     });
 });

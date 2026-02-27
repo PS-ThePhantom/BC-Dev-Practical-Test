@@ -5,7 +5,7 @@ from ...services.client_service import ClientService
 @api_bp.route("/clients", methods=["GET"])
 def get_clients():
     all_clients = ClientService.get_all_clients()
-    clients_data = [{"id": client.id, "name": client.name, "client_code": client.client_code, "no_of_contacts": ClientService.get_no_of_contacts(client.id)} for client in all_clients]
+    clients_data = [{"name": client.name, "client_code": client.client_code, "no_of_contacts": ClientService.get_no_of_contacts(client.id)} for client in all_clients]
     
     return jsonify({"message": "success", "clients": clients_data}), 200
 
@@ -14,6 +14,9 @@ def create_client():
     name = request.json.get("name")
     if not name:
         return jsonify({"error": "Name is required"}), 400
+    
+    if len(name) > 100:
+        return jsonify({"error": "Name is too long, max = 100 characters"}), 400
 
     client = ClientService.create_client(name)
     if not client:
@@ -49,7 +52,7 @@ def get_unlinked_contacts(client_code):
 
 @api_bp.route("/clients/<string:client_code>/contacts/<string:contact_email>", methods=["POST"])
 def link_contact_to_client(client_code, contact_email):
-    success = ClientService.link_contact_by_email(client_code, contact_email)
+    success = ClientService.link_contact(client_code, contact_email)
     if not success:
         return jsonify({"error": "Failed to link contact"}), 400
 

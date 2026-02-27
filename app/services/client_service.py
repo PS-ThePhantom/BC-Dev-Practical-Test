@@ -65,6 +65,7 @@ class ClientService:
     def get_all_clients():
         return Client.query.order_by(Client.name).all()
     
+    @staticmethod
     def get_no_of_linked_Contacts(client_id: int) -> int:
         client = Client.query.get(client_id)
         if not client:
@@ -87,7 +88,14 @@ class ClientService:
         if not client:
             return None
 
-        return client.contacts
+        return (
+            Contact.query
+            .join(client_contact, Contact.id == client_contact.c.contact_id)
+            .filter(client_contact.c.client_id == client.id)
+            .order_by(Contact.surname, Contact.name)
+            .all()
+        )
+
     
     @staticmethod
     def get_unlinked_contacts(client_code: str):
@@ -98,9 +106,18 @@ class ClientService:
         linked_ids = [contact.id for contact in client.contacts]
 
         if linked_ids:
-            unlinked_contacts = Contact.query.filter(~Contact.id.in_(linked_ids)).all()
+            unlinked_contacts = (
+                Contact.query
+                .filter(~Contact.id.in_(linked_ids))
+                .order_by(Contact.surname, Contact.name)
+                .all()
+            )
         else:
-            unlinked_contacts = Contact.query.all()
+            unlinked_contacts = (
+                Contact.query
+                .order_by(Contact.surname, Contact.name)
+                .all()
+            )
 
         return unlinked_contacts
     

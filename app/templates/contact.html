@@ -1,18 +1,16 @@
-{% extends "base.html" %}
+{% extends "client_contact_base.html" %}
 
-{% block title %}Contact Area - Binary City's Practical Test{% endblock %}
-
-{% block styles %}
-    <link rel="stylesheet" href="/static/css/contact.css">
-{% endblock %}
-
-{% block content %}
-    <div class="container-fluid text-center vh-100 d-flex flex-column align-items-center">
-        <h1 class="display-4">Welcome to Contact Area</h1>
-        <p class="lead">Create and manage contact information.</p>
-    </div>
-{% endblock %}
-
-{% block scripts %}
-    <script src="/static/js/contact.js"></script>
+{% block inputs %}
+                    <div class="mb-3 text-start">
+                        <label for="{{ mainTab }}-name" class="form-label">{{ mainTab|capitalize }} Name</label>
+                        <input type="text" class="form-control" id="{{ mainTab }}-name" placeholder="Enter {{ mainTab }} name" required>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="{{ mainTab }}-surname" class="form-label">{{ mainTab|capitalize }} surname</label>
+                        <input type="text" class="form-control" id="{{ mainTab }}-surname" placeholder="Enter {{ mainTab }} surname" required>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="{{ mainTab }}-email" class="form-label">{{ mainTab|capitalize }} email</label>
+                        <input type="text" class="form-control" id="{{ mainTab }}-email" placeholder="Enter {{ mainTab }} email" required>
+                    </div>
 {% endblock %}
