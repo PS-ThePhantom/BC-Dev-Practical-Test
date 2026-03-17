@@ -1,5 +1,6 @@
 from .. import db
 from ..models.client import Contact, Client, client_contact
+from sqlalchemy import func
 
 class ContactService:
     @staticmethod
@@ -15,7 +16,7 @@ class ContactService:
     
     @staticmethod
     def get_all_contacts():
-        return Contact.query.order_by(Contact.surname, Contact.name).all()
+        return Contact.query.order_by(func.lower(Contact.surname), func.lower(Contact.name)).all()
 
     @staticmethod
     def get_no_of_linked_clients(email: str) -> int:
@@ -37,13 +38,13 @@ class ContactService:
             unlinked_clients = (
                 Client.query
                 .filter(~Client.id.in_(linked_ids))
-                .order_by(Client.name)
+                .order_by(func.lower(Client.name))
                 .all()
             )
         else:
             unlinked_clients = (
                 Client.query
-                .order_by(Client.name)
+                .order_by(func.lower(Client.name))
                 .all()
             )
 
@@ -59,6 +60,6 @@ class ContactService:
             Client.query
             .join(client_contact, Client.id == client_contact.c.client_id)
             .filter(client_contact.c.contact_id == contact.id)
-            .order_by(Client.name)
+            .order_by(func.lower(Client.name))
             .all()
         )
