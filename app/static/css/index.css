@@ -1,30 +1,23 @@
-.btn-primary {
-    background-color: var(--light-blue);
-    border-color: var(--dark-blue);
-    height: 3.5rem;
+.nav-link{
+    height: 3rem;
     max-height: none;
     width: 10rem;
     min-width: none;
     transition: all 0.3s ease;
     font-family: var(--zain), serif;
+    border: 1px solid var(--dark-blue) !important;
+    border-radius: 0.5rem !important;
+    margin: 0 0.5rem !important;
+    color: var(--dark-blue);
 }
 
-.btn-primary:hover {
-    background-color: var(--dark-blue);
-    border-color: var(--light-blue);
+.nav-link.active {
+    background-color: var(--dark-blue) !important;
+    color: white !important;
 }
 
-.btn-primary:active {
-    transform: scale(0.95);
-}
-
-@media (max-width: 365px) {
-    #btn-group {
-        flex-direction: column !important;
-        width: 100%;
-    }
-
-    .btn-primary {
-        width: 100%;
-    }
+.table {
+    border-radius: 0.5rem !important;
+    max-height: 5rem !important;
+    overflow-y: auto;
 }

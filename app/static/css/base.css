@@ -25,12 +25,13 @@ body {
     background: var(--background-gradient);
     color: var(--black);
     font-family: var(--poppins), sans-serif;
+    min-height: 100vh !important;
+    max-width: 100%;
 }
 
 .section-divider {
-    width: 100%;
-    border-top: 1px solid var(--dark-blue) !important;
-    max-width: 50rem;
+    width: 1px;
+    min-height: 100%;
 }
 
 .hidden, .sr-only {
@@ -48,4 +49,72 @@ body {
 
 .my-btn > i {
     margin-right: 0.5rem;
+}
+
+.table-responsive{
+    max-height: 20rem;
+    width: 600px;
+}
+
+.table-modal{
+    max-width: 100%;
+    width: 100%;
+    max-height: 15rem;
+}
+
+.modal-dialog {
+    width: 600px;
+}
+
+
+.main-container{
+    max-width: 100%;
+}
+
+.close {
+    border-radius: 50%;
+    border: solid 1px var(--dark-blue);
+    color: var(--dark-blue);
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.5rem;
+}
+
+.inputs {
+    min-width: 215px;
+}
+
+#area-tab > div{
+        margin: 0 auto;
+    }
+
+@media screen and (max-width: 1000px) {
+    .table-responsive{
+        width: 100%;
+    }
+
+    #area-tab {
+        flex-wrap: wrap !important; 
+    }
+
+    
+}
+
+@media screen and (max-width: 720px) {
+    #area-tab {
+        flex-direction: column !important;
+    }
+
+    .section-divider {
+        min-width: 100%;
+        min-height: 1px;
+        max-height: 1px;
+        height: 1px;
+    }
+}
+
+@media screen and (max-width: 720px) {
+    .table-section, .table-section *{
+        max-width: 100%;
+    }
 }

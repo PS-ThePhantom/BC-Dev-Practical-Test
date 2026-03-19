@@ -4,7 +4,13 @@ from ...services.client_service import ClientService
 
 @api_bp.route("/clients", methods=["GET"])
 def get_clients():
-    all_clients = ClientService.get_all_clients()
+    name = request.args.get("name", "").strip()
+
+    if name:
+        all_clients = ClientService.get_clients_by_name(name)
+    else:
+        all_clients = ClientService.get_all_clients()
+    
     clients_data = [{"name": client.name, "client_code": client.client_code, "no_of_contacts": ClientService.get_no_of_contacts(client.id)} for client in all_clients]
     
     return jsonify({"message": "success", "clients": clients_data}), 200
@@ -30,11 +36,20 @@ def get_client_contacts(client_code):
     if contacts is None:
         return jsonify({"error": "Client not found"}), 404
 
-    contacts_data = [
-        {"name": contact.name, "surname":contact.surname, "email": contact.email}
-        for contact in contacts
-    ]
+    name = request.args.get("name", "").strip()
 
+    if name:
+        contacts_data = [
+            {"name": contact.name, "surname":contact.surname, "email": contact.email}
+            for contact in contacts
+            if name in f"{contact.surname} {contact.name}"
+        ]
+    else:
+        contacts_data = [
+            {"name": contact.name, "surname":contact.surname, "email": contact.email}
+            for contact in contacts
+        ]
+    
     return jsonify({"message": "success", "contacts": contacts_data}), 200
 
 @api_bp.route("/clients/<string:client_code>/contacts/unlinked", methods=["GET"])

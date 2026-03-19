@@ -34,13 +34,19 @@ def test_create_client(app):
         assert Client4.client_code == "ITA001"
 
         Client5 = ClientService.create_client("I")
-        assert Client5.client_code == "IAB001"
+        assert Client5.client_code == "IAA001"
 
         Client6 = ClientService.create_client("Amazon W")
         assert Client6.client_code == "AMW001"
 
         Client7 = ClientService.create_client("A W")
         assert Client7.client_code == "AWA001"
+
+        client_code = ''
+        for i in range(1000):
+            client_code = ClientService.create_client('A').client_code
+
+        assert client_code == "AAB001"
 
 
 def test_get_all_clients(app):

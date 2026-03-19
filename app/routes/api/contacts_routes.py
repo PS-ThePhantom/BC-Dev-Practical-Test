@@ -5,8 +5,20 @@ import re
 
 @api_bp.route("/contacts", methods=["GET"])
 def get_contacts():
+    name = request.args.get("name", "").strip()
     all_contacts = ContactService.get_all_contacts()
-    contacts_data = [{"surname": contact.surname, "name": contact.name, "email": contact.email, "count": ContactService.get_no_of_linked_clients(contact.email)} for contact in all_contacts]
+
+    if name:
+        contacts_data = [
+            {"surname": contact.surname, "name": contact.name, "email": contact.email, "count": ContactService.get_no_of_linked_clients(contact.email)} 
+            for contact in all_contacts
+            if name in f"{contact.surname} {contact.name}"
+        ]
+    else:
+        contacts_data = [
+            {"surname": contact.surname, "name": contact.name, "email": contact.email, "count": ContactService.get_no_of_linked_clients(contact.email)} 
+            for contact in all_contacts
+        ]
 
     return jsonify({"message": "success", "contacts": contacts_data}), 200
 
@@ -53,10 +65,16 @@ def get_unlinked_clients(contact_email):
 
 @api_bp.route("/contacts/<string:email>/clients", methods=["GET"])
 def get_contact_clients(email):
-    clients = ContactService.get_clients_by_contact(email)
+    name = request.args.get("name", "").strip()
+
+    if name:
+        clients = ContactService.get_clients_by_contact_filtered(email, name)
+    else:
+        clients = ContactService.get_clients_by_contact(email)
+    
     if clients is None:
         return jsonify({"error": "Contact not found"}), 404
-
+    
     clients_data = [
         {"name": client.name, "client_code": client.client_code}
         for client in clients

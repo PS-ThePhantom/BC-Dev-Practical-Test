@@ -1,6 +1,4 @@
-{% extends "client_contact_base.html" %}
 
-{% block inputs %}
                     <div class="mb-3 text-start">
                         <label for="{{ mainTab }}-name" class="form-label">{{ mainTab|capitalize }} Name</label>
                         <input type="text" class="form-control" id="{{ mainTab }}-name" placeholder="Enter {{ mainTab }} name" required>
@@ -9,4 +7,3 @@
                         <label for="{{ mainTab }}-code" class="form-label">{{ mainTab|capitalize }} Code</label>
                         <input type="text" class="form-control" id="{{ mainTab }}-code" placeholder="Auto-generated {{ mainTab }} code" readonly disabled>
                     </div>
-{% endblock %}

@@ -5,12 +5,63 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid text-center vh-100 d-flex flex-column align-items-center py-5 px-2">
+    <div class="container-fluid text-center d-flex flex-column align-items-center py-3" id="main-container">
         <h1 class="display-5">Welcome to Binary <span class="text-danger">City</span>'s Practical Test App!</h1>
-        <p class="lead">This is the home page. Use the buttons to explore the app.</p>
-        <div class="mt-4 d-flex flex-row gap-3" id="btn-group">
-            <a href="/client" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center">Client Area</a>
-            <a href="/contact" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center">Contact Area</a>
+        <p class="lead">Manage clients and Contacts.</p>
+        
+        <ul class="nav nav-tabs m-3 gap-1 justify-content-center" id="main-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="clients-tab" data-bs-toggle="tab" data-bs-target="#client-area" type="button" role="tab" aria-controls="client-area" aria-selected="true">Client Area</button>
+          </li>
+          
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contact-area" type="button" role="tab" aria-controls="contact-area" aria-selected="false">Contact Area</button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="main-tab-content">
+            <div class="tab-pane fade show active" id="client-area" role="tabpanel" aria-labelledby="clients-tab">
+                {% set mainTab = 'client' %}
+
+                {% set otherTab = 'contact' %}
+
+                {% set mainTableHeaders = [
+                    ["Name", "start"],
+                    ["Client code", "start"],
+                    ["No. of linked contacts", "center"],
+                    ["Contacts", "center"]
+                ] %}
+
+                {% set otherTableHeaders = [
+                    ["Contact Full Name", "start"],
+                    ["Contact email address", "start"],
+                    ["", "start"]
+                ] %}
+
+                {% include 'client_contact_base.html' %}
+            </div>
+
+            <div class="tab-pane fade show" id="contact-area" role="tabpanel" aria-labelledby="contacts tab">
+                {% set mainTab = 'contact' %}
+
+                {% set otherTab = 'client' %}
+
+                {% set mainTableHeaders = [
+                    ["Name", "start"],
+                    ["Surname", "start"],
+                    ["Email address", "start"],
+                    ["No. of linked clients", "center"],
+                    ["Clients", "center"]
+                ] %}
+
+                {% set otherTableHeaders = [
+                    ["Client Name", "start"],
+                    ["Client code", "start"],
+                    ["", "start"]
+                ] %}
+
+                {% include 'client_contact_base.html' %}
+            </div>
         </div>
     </div>
 {% endblock %}

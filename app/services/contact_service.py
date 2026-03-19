@@ -63,3 +63,17 @@ class ContactService:
             .order_by(func.lower(Client.name))
             .all()
         )
+    
+    @staticmethod
+    def get_clients_by_contact_filtered(email: str, name: str):
+        contact = Contact.query.filter_by(email=email).first()
+        if not contact:
+            return None
+
+        return (
+            Client.query
+            .join(client_contact, Client.id == client_contact.c.client_id)
+            .filter(client_contact.c.contact_id == contact.id, func.lower(Client.name).like(f"%{name.lower()}%"))
+            .order_by(func.lower(Client.name))
+            .all()
+        )

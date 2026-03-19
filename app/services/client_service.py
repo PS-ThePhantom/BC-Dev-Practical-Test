@@ -4,11 +4,27 @@ from sqlalchemy import func
 import string
 
 class ClientService:
+    @staticmethod
+    def increment_prefix(prefix: str) -> str:
+        ALPHABET = string.ascii_uppercase
+        chars = list(prefix)
+        i = len(chars) - 1
+
+        while i >= 0:
+            if chars[i] == 'Z':
+                chars[i] = 'A'
+                i -= 1
+            else:
+                chars[i] = ALPHABET[ALPHABET.index(chars[i]) + 1]
+                break
+
+        return ''.join(chars)
+
 
     @staticmethod
     def fill_word(word: str, target_length: int = 3) -> str:
         needed = target_length - len(word)
-        alphabet = string.ascii_uppercase
+        alphabet = "AAAAAAAAAAAAA"
         return word + alphabet[:needed]
 
     @staticmethod
@@ -50,6 +66,10 @@ class ClientService:
                 numbers.append(int(suffix))
 
         next_number = max(numbers) + 1 if numbers else 1
+        if next_number > 999:
+            prefix = ClientService.increment_prefix(prefix)
+            next_number = 1
+
         return f"{prefix}{str(next_number).zfill(3)}"
     
     @staticmethod
@@ -65,6 +85,15 @@ class ClientService:
     def get_all_clients():
         return Client.query.order_by(func.lower(Client.name)).all()
     
+    @staticmethod
+    def get_clients_by_name(name):
+        return (
+            Client.query
+            .filter(func.lower(Client.name).like(f"%{name.lower()}%"))
+            .order_by(func.lower(Client.name))
+            .all()
+        )
+
     @staticmethod
     def get_no_of_linked_Contacts(client_id: int) -> int:
         client = Client.query.get(client_id)

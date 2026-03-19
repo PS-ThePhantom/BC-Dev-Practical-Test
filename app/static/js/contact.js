@@ -49,11 +49,11 @@ $("#contact-form").submit(function(event) {
                     .removeClass("text-danger")
                     .addClass("text-success");
 
-                updateContactTable();
+                updateContactTableCC();
             },
             error: function(xhr, status, error) {
                 $("#contact-create-success")
-                    .text(error)
+                    .text("falied to create contact, email already exists")
                     .removeClass("text-success")
                     .addClass("text-danger");
             },
@@ -73,7 +73,7 @@ $("#clients-form").submit(function(event) {
     $("#client-submit-button>div").removeClass("hidden");
     $("#client-submit-button>span").addClass("hidden");
 
-    const clientCode = $("#client-name").val();
+    const clientCode = $("#client-select-name").val();
     const contact_email = currentContact.data("contact-email");
 
     $.ajax({
@@ -81,13 +81,14 @@ $("#clients-form").submit(function(event) {
         method: "POST",
         contentType: "application/json",
         success: function(response) {
-            $("#client-name").val("");
+            $("#client-select-name").val("");
             $("#client-link-success")
                 .text(response.message)
                 .removeClass("text-danger")
                 .addClass("text-success");
 
-            updateClientsTable(contact_email);
+            updateClientsTableCC(contact_email);
+            updateContactTableCC();
         },
         error: function(xhr, status, error) {
             $("#client-link-success")
@@ -99,24 +100,27 @@ $("#clients-form").submit(function(event) {
             $("#client-submit-button>div").addClass("hidden");
             $("#client-submit-button>span").removeClass("hidden");
             $("#client-submit-button").prop("disabled", false);
-            $("#client-create-success").removeClass("hidden");
+            $("#client-link-success").removeClass("hidden");
 
-            openClientsTab(currentContact);
+            openClientsTabCC(currentContact);
         }
     });
 });
 
-const updateContactTable = () => {
+const updateContactTableCC = () => {
     $("#contact-list-loading").removeClass("hidden");
     $("#existing-contacts-table").addClass("hidden");
     $("#contact-list-error").addClass("hidden");
     
     const tbody = $("#existing-contacts-table tbody");
+    const nameFilter = $("#filter-contact-table").val().trim();
+
     tbody.empty();
 
     $.ajax({
         url: "/api/contacts",
         method: "GET",
+        data: {name: nameFilter},
         success: function(response) {
             const contacts = response.contacts;
 
@@ -149,14 +153,12 @@ const updateContactTable = () => {
     });
 }
 
-const openClientsTab = (contact) => {
+const openClientsTabCC = (contact) => {
     const contactName = contact.data("contact-name");
     const contactEmail = contact.data("contact-email");
-    const clientsTab = new bootstrap.Tab($("#clients-tab"));
-    const selectInput = $("#client-name");
+    const selectInput = $("#client-select-name");
 
-    $("#link-client-head").text(`Link a client to ${contactName} (${contactEmail})`);
-    $("#linked-clients-head").text(`clients linked to ${contactName} (${contactEmail})`);
+    $("#link-client-head").text(`Clients linked to ${contactName}`);
 
     selectInput.empty();
 
@@ -188,28 +190,31 @@ const openClientsTab = (contact) => {
                 .addClass("text-danger");
         },
         complete: function() {
-            clientsTab.show();
-            updateClientsTable(contactEmail);
+            $('#linked-client').modal('show');
+            updateClientsTableCC(contactEmail);
         }
     });
 }
 
-const updateClientsTable = (email) => {
-    $("#client-list-loading").removeClass("hidden");
+const updateClientsTableCC = (email) => {
+    $("#client-modal-list-loading").removeClass("hidden");
     $("#linked-clients-table").addClass("hidden");
-    $("#client-list-error").addClass("hidden");
+    $("#client-modal-list-error").addClass("hidden");
     
     const tbody = $("#linked-clients-table tbody");
+    const nameFilter= $("#filter-contact-modal-table").val().trim();
+
     tbody.empty();
 
     $.ajax({
         url: `/api/contacts/${email}/clients`,
         method: "GET",
+        data: {name: nameFilter},
         success: function(response) {
             const clients = response.clients;
 
             if (clients.length == 0) {
-                $("#client-list-error")
+                $("#client-modal-list-error")
                     .text("No clients found.")
                     .removeClass("hidden");
             } else {
@@ -220,7 +225,7 @@ const updateClientsTable = (email) => {
                             <td class="text-start">${client.client_code}</td>
                             <td class="text-start">
                                 <a href="api/clients/${client.client_code}/contacts/${email}">
-                                    ${window.location.origin}/api/clients/${client.client_code}/contacts/${email}
+                                    <button class="btn btn-secondary w-100">Unlink</button>
                                 <a>
                             </td>
                         </tr>
@@ -231,10 +236,10 @@ const updateClientsTable = (email) => {
             }
         },
         error: function(xhr, status, error) {
-            $("#client-list-error").text("Failed to fetch clients, " + error).removeClass("hidden");
+            $("#client-modal-list-error").text("Failed to fetch clients, " + error).removeClass("hidden");
         },
         complete: function() {
-            $("#client-list-loading").addClass("hidden");
+            $("#client-modal-list-loading").addClass("hidden");
         }
     });
 }
@@ -246,7 +251,7 @@ const unlinkClients = (button) => {
         url: link,
         type: "DELETE",
         success: function(response) {
-            openClientsTab(currentContact);
+            openClientsTabCC(currentContact);
         },
         error: function(xhr, status, error) {
             alert("Error unlinking client");
@@ -255,19 +260,28 @@ const unlinkClients = (button) => {
 }
 
 $(function() {
-    updateContactTable();
+    updateContactTableCC();
     
     $("#existing-contacts-table").on("click", "button", function() {
         currentContact = $(this);
-        openClientsTab($(this));
+        openClientsTabCC($(this));
     });
 
     $("#linked-clients-table").on("click", "a", function(event) {
         event.preventDefault();
         unlinkClients($(this));
+        updateContactTableCC();
     });
 
     $("#general-tab").on("shown.bs.tab", function(event) {
-        updateContactTable();
+        updateContactTableCC();
+    });
+
+    $("#filter-contact-table").on("input", function(event){
+        updateContactTableCC();
+    });
+
+    $("#filter-contact-modal-table").on("input", function(event){
+        updateClientsTableCC(currentContact.data("contact-email"));
     });
 });
